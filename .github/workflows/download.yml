@@ -1,0 +1,33 @@
+name: Download CPI Artifacts
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    env:
+      CPI_HOST: ${{ secrets.CPI_HOST }}
+      TOKEN_URL: ${{ secrets.TOKEN_URL }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
+
+      - name: Build Project
+        run: mvn clean package
+
+      - name: Run Transport Manager
+        run: java -jar target/transport-manager-1.0-SNAPSHOT.jar
+
+      - name: Show Downloads
+        run: ls -R downloads

@@ -1,0 +1,26 @@
+name: Build Transport Manager
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
+
+      - name: Build Project
+        run: mvn clean package
+
+      - name: Show Target Folder
+        run: ls -R target
