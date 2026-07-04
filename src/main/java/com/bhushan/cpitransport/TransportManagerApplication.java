@@ -42,14 +42,16 @@ public class TransportManagerApplication {
         }
 
         String iflowId = args[0];
+//        String iflowId = "uploaded_iflow";
+//        System.out.println(iflowId);
 
         integrationFlowService.downloadIntegrationFlow(
                 accessToken,
-                "iflowId"
+                iflowId
         );
         integrationFlowService.downloadConfiguration(
                 accessToken,
-                "iflowId"
+                iflowId
         );
 
 
