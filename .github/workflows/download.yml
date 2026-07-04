@@ -2,6 +2,14 @@ name: Download CPI Artifacts
 
 on:
   workflow_dispatch:
+    inputs:
+      iflow:
+        description: 'Integration Flow ID'
+        required: true
+        default: 'Test_iflow'
+
+permissions:
+  contents: write
 
 jobs:
   download:
@@ -27,7 +35,19 @@ jobs:
         run: mvn clean package
 
       - name: Run Transport Manager
-        run: java -jar target/transport-manager-1.0-SNAPSHOT.jar
+        run: |
+          java -jar target/transport-manager-1.0-SNAPSHOT.jar "${{ github.event.inputs.iflow }}"
 
       - name: Show Downloads
         run: ls -R downloads
+
+      - name: Commit Downloaded Artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add downloads/
+
+          git commit -m "Downloaded ${{ github.event.inputs.iflow }}" || echo "No changes"
+
+          git push

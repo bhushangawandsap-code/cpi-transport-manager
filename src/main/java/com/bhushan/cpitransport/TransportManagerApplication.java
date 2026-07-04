@@ -36,13 +36,20 @@ public class TransportManagerApplication {
         System.out.println(accessToken);
 
         integrationFlowService.listIntegrationFlows(accessToken);
+
+        if (args.length == 0) {
+            throw new RuntimeException("Please provide an Integration Flow ID.");
+        }
+
+        String iflowId = args[0];
+
         integrationFlowService.downloadIntegrationFlow(
                 accessToken,
-                "Test_iflow"
+                "iflowId"
         );
         integrationFlowService.downloadConfiguration(
                 accessToken,
-                "Test_iflow"
+                "iflowId"
         );
 
 
