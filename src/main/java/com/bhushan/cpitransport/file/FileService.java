@@ -69,4 +69,48 @@ public class FileService {
 
     }
 
+    public void saveConfigurationTemplate(
+            String configuration,
+            String iflowId,
+            String targetEnvironment) {
+
+        try {
+
+            Files.createDirectories(
+                    Paths.get(
+                            "downloads",
+                            targetEnvironment.toUpperCase(),
+                            "configs"
+                    )
+            );
+
+            Files.writeString(
+                    Paths.get(
+                            "downloads",
+                            targetEnvironment.toUpperCase(),
+                            "configs",
+                            iflowId + "_" + targetEnvironment.toUpperCase() + ".json"
+                    ),
+                    configuration
+            );
+
+            System.out.println("Configuration Template Saved Successfully!");
+
+            System.out.println(
+                    "File saved at : downloads/"
+                            + targetEnvironment.toUpperCase()
+                            + "/configs/"
+                            + iflowId + "_"
+                            + targetEnvironment.toUpperCase()
+                            + ".json"
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
 }

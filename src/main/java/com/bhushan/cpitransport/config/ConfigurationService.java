@@ -27,21 +27,20 @@ public class ConfigurationService {
 
 
     }
-    public String getHost() {
-
-        return getValue("CPI_HOST", "integration.host");
-
-    }
-    public String getTokenUrl() {
-        return getValue("TOKEN_URL", "integration.token.url");
+    public String getHost(String environment) {
+        return properties.getProperty(environment.toLowerCase() + ".host");
     }
 
-    public String getClientId() {
-        return getValue("CLIENT_ID", "integration.client.id");
+    public String getTokenUrl(String environment) {
+        return properties.getProperty(environment.toLowerCase() + ".token.url");
     }
 
-    public String getClientSecret() {
-        return getValue("CLIENT_SECRET", "integration.client.secret");
+    public String getClientId(String environment) {
+        return properties.getProperty(environment.toLowerCase() + ".client.id");
+    }
+
+    public String getClientSecret(String environment) {
+        return properties.getProperty(environment.toLowerCase() + ".client.secret");
     }
 
     public String getApiUrl() {

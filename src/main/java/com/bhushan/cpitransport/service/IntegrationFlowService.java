@@ -23,13 +23,14 @@ public class IntegrationFlowService {
         this.fileService = fileService;
     }
 
-    public void listIntegrationFlows(String accessToken) {
+    public void listIntegrationFlows( String accessToken,
+                                      String environment) {
 
         System.out.println("======================================");
         System.out.println("Listing Integration Flows...");
         System.out.println("======================================");
         String url =
-                configurationService.getHost()
+                configurationService.getHost(environment)
                         + configurationService.getApiUrl()
                         + "/IntegrationDesigntimeArtifacts";
         System.out.println(url);
@@ -43,7 +44,9 @@ public class IntegrationFlowService {
 
     }
 
-    public void downloadIntegrationFlow(String accessToken, String iflowId) {
+    public void downloadIntegrationFlow(String accessToken,
+                                        String environment,
+                                        String iflowId) {
 
         try {
 
@@ -52,7 +55,7 @@ public class IntegrationFlowService {
             System.out.println("======================================");
 
             String url =
-                    configurationService.getHost()
+                    configurationService.getHost(environment)
                             + configurationService.getApiUrl()
                             + "/IntegrationDesigntimeArtifacts("
                             + "Id='" + iflowId + "',Version='active'"
@@ -72,7 +75,7 @@ public class IntegrationFlowService {
                 fileService.saveZip(
                         response.body(),
                         iflowId,
-                        sourceEnvironment
+                        environment.toUpperCase()
                 );
             }
 
@@ -86,6 +89,7 @@ public class IntegrationFlowService {
     }
 
     public void downloadConfiguration(String accessToken,
+                                      String environment,
                                       String iflowId) {
 
         System.out.println("======================================");
@@ -93,7 +97,7 @@ public class IntegrationFlowService {
         System.out.println("======================================");
 
         String url =
-                configurationService.getHost()
+                configurationService.getHost(environment)
                         + configurationService.getApiUrl()
                         + "/IntegrationDesigntimeArtifacts("
                         + "Id='" + iflowId + "',Version='active'"
@@ -105,12 +109,12 @@ public class IntegrationFlowService {
 
         System.out.println("Status Code : " + response.statusCode());
 
-        String sourceEnvironment = "DEV";
+
 
         fileService.saveConfiguration(
                 response.body(),
                 iflowId,
-                sourceEnvironment
+                environment.toUpperCase()
         );
 
     }

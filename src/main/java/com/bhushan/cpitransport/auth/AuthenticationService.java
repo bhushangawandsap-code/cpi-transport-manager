@@ -15,16 +15,16 @@ public class AuthenticationService {
         this.httpClientService = httpClientService;
     }
 
-    public String generateToken() {
+    public String generateToken(String environment) {
 
         String requestBody =
                 "grant_type=client_credentials"
-                        + "&client_id=" + configurationService.getClientId()
-                        + "&client_secret=" + configurationService.getClientSecret();
+                        + "&client_id=" + configurationService.getClientId(environment)
+                        + "&client_secret=" + configurationService.getClientSecret(environment);
 
         HttpResponse<String> response =
                 httpClientService.post(
-                        configurationService.getTokenUrl(),
+                        configurationService.getTokenUrl(environment),
                         requestBody
                 );
 

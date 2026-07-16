@@ -107,4 +107,61 @@ public class HttpClientService {
         }
 
     }
+    public HttpResponse<String> post(
+            String url,
+            String body,
+            String accessToken) {
+
+        try {
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+            return httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    public HttpResponse<String> put(
+            String url,
+            String body,
+            String accessToken) {
+
+        try {
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+            return httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+
 }
