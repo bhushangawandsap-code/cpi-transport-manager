@@ -102,7 +102,7 @@ jobs:
           -Dtarget=${{ github.event.inputs.target }} \
           -DupdateConfiguration=${{ github.event.inputs.updateConfiguration }} \
           -Ddeploy=${{ github.event.inputs.deploy }} \
-          -jar target/transport-manager-1.0-SNAPSHOT-shaded.jar
+          -jar target/transport-manager.jar
 
       - name: Commit Generated Configuration Files
         run: |
