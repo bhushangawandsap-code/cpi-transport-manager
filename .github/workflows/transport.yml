@@ -1,0 +1,90 @@
+name: CPI Transport Manager
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Operation"
+        required: true
+        default: "transport"
+        type: choice
+        options:
+          - transport
+          - sync-config
+
+      iflow:
+        description: "Integration Flow Name"
+        required: true
+        default: "Test_Iflow"
+
+      source:
+        description: "Source Environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+
+      target:
+        description: "Target Environment"
+        required: true
+        default: "qa"
+        type: choice
+        options:
+          - qa
+          - prod
+
+      updateConfiguration:
+        description: "Update Externalized Parameters"
+        required: true
+        default: true
+        type: boolean
+
+      deploy:
+        description: "Deploy After Transport"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  transport:
+
+    runs-on: ubuntu-latest
+
+    env:
+      DEV_HOST: ${{ secrets.DEV_HOST }}
+      DEV_TOKEN_URL: ${{ secrets.DEV_TOKEN_URL }}
+      DEV_CLIENT_ID: ${{ secrets.DEV_CLIENT_ID }}
+      DEV_CLIENT_SECRET: ${{ secrets.DEV_CLIENT_SECRET }}
+
+      QA_HOST: ${{ secrets.QA_HOST }}
+      QA_TOKEN_URL: ${{ secrets.QA_TOKEN_URL }}
+      QA_CLIENT_ID: ${{ secrets.QA_CLIENT_ID }}
+      QA_CLIENT_SECRET: ${{ secrets.QA_CLIENT_SECRET }}
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build Project
+        run: mvn -B clean package
+
+      - name: Run CPI Transport Manager
+        run: |
+          java \
+            -Doperation="${{ github.event.inputs.operation }}" \
+            -Diflow="${{ github.event.inputs.iflow }}" \
+            -Dsource="${{ github.event.inputs.source }}" \
+            -Dtarget="${{ github.event.inputs.target }}" \
+            -DupdateConfiguration="${{ github.event.inputs.updateConfiguration }}" \
+            -Ddeploy="${{ github.event.inputs.deploy }}" \
+            -jar target/transport-manager.jar

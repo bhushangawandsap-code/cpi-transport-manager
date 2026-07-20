@@ -13,103 +13,12 @@ public class HttpClientService {
 
         System.out.println("Initializing HTTP Client...");
 
-        httpClient = HttpClient.newHttpClient();
+        this.httpClient = HttpClient.newHttpClient();
 
     }
-    public void testConnection() {
 
-        System.out.println("Testing HTTP Client...");
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.google.com"))
-                .GET()
-                .build();
-
-
-        System.out.println(request);
-        try {
-
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Response received!");
-            System.out.println(response.statusCode());
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-
-        }
-
-
-
-    }
-    public HttpResponse<String> post(String url, String body) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .POST(HttpRequest.BodyPublishers.ofString(body))
-                    .build();
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return response;
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-
-        }
-
-
-
-
-    }
-    public HttpResponse<String> get(String url, String accessToken) {
-
-        try {
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .header("Accept", "application/json")
-                    .GET()
-                    .build();
-
-            return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-
-        }
-
-    }
-    public HttpResponse<byte[]> getFile(String url, String accessToken) {
-
-        try {
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .header("Accept", "application/json")
-                    .GET()
-                    .build();
-
-            return httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofByteArray()
-            );
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-
-        }
-
-    }
-    public HttpResponse<String> post(
+    public HttpResponse<String> get(
             String url,
-            String body,
             String accessToken) {
 
         try {
@@ -117,21 +26,57 @@ public class HttpClientService {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Authorization", "Bearer " + accessToken)
-                    .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .GET()
                     .build();
 
             return httpClient.send(
                     request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
+                    HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {
 
             throw new RuntimeException(e);
 
         }
+
+    }
+
+    public HttpResponse<byte[]> getFile(
+            String url,
+            String accessToken) {
+
+        try {
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .GET()
+                    .build();
+
+            return httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofByteArray());
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    public HttpResponse<String> post(
+            String url,
+            String body,
+            String accessToken) {
+
+        return send(
+                "POST",
+                url,
+                body,
+                accessToken
+        );
 
     }
 
@@ -140,20 +85,48 @@ public class HttpClientService {
             String body,
             String accessToken) {
 
+        return send(
+                "PUT",
+                url,
+                body,
+                accessToken
+        );
+
+    }
+
+    private HttpResponse<String> send(
+            String method,
+            String url,
+            String body,
+            String accessToken) {
+
         try {
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(body))
-                    .build();
+            HttpRequest.Builder builder =
+                    HttpRequest.newBuilder()
+                            .uri(URI.create(url))
+                            .header("Authorization",
+                                    "Bearer " + accessToken)
+                            .header("Content-Type",
+                                    "application/json")
+                            .header("Accept",
+                                    "application/json");
+
+            if ("POST".equals(method)) {
+
+                builder.POST(
+                        HttpRequest.BodyPublishers.ofString(body));
+
+            } else {
+
+                builder.PUT(
+                        HttpRequest.BodyPublishers.ofString(body));
+
+            }
 
             return httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
+                    builder.build(),
+                    HttpResponse.BodyHandlers.ofString());
 
         } catch (Exception e) {
 
@@ -163,5 +136,28 @@ public class HttpClientService {
 
     }
 
+    public HttpResponse<String> post(
+            String url,
+            String body) {
+
+        try {
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+            return httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString());
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
 
 }

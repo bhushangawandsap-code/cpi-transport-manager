@@ -6,9 +6,21 @@ import java.util.Properties;
 
 public class ConfigurationService {
 
-
     private final Properties properties;
 
+    public ConfigurationService() {
+
+        properties = new Properties();
+
+        System.out.println("Loading Configurations...");
+
+        loadProperties();
+    }
+
+    /**
+     * Returns the environment variable if available.
+     * Otherwise falls back to the local properties file.
+     */
     private String getValue(String envName, String propertyName) {
 
         String value = System.getenv(envName);
@@ -19,46 +31,61 @@ public class ConfigurationService {
 
         return properties.getProperty(propertyName);
     }
-    public ConfigurationService() {
 
-        properties = new Properties();
-        System.out.println("Loading Configurations...");
-        loadProperties();
-
-
-    }
     public String getHost(String environment) {
-        return properties.getProperty(environment.toLowerCase() + ".host");
+
+        return getValue(
+                environment.toUpperCase() + "_HOST",
+                environment.toLowerCase() + ".host");
     }
 
     public String getTokenUrl(String environment) {
-        return properties.getProperty(environment.toLowerCase() + ".token.url");
+
+        return getValue(
+                environment.toUpperCase() + "_TOKEN_URL",
+                environment.toLowerCase() + ".token.url");
     }
 
     public String getClientId(String environment) {
-        return properties.getProperty(environment.toLowerCase() + ".client.id");
+
+        return getValue(
+                environment.toUpperCase() + "_CLIENT_ID",
+                environment.toLowerCase() + ".client.id");
     }
 
     public String getClientSecret(String environment) {
-        return properties.getProperty(environment.toLowerCase() + ".client.secret");
+
+        return getValue(
+                environment.toUpperCase() + "_CLIENT_SECRET",
+                environment.toLowerCase() + ".client.secret");
     }
 
     public String getApiUrl() {
+
         return properties.getProperty("integration.api.url");
     }
 
     private void loadProperties() {
 
         System.out.println("Inside loadProperties()");
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("transport-manager-dev.properties");
+
+        InputStream inputStream =
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream("transport-manager-dev.properties");
+
         if (inputStream == null) {
             throw new RuntimeException("transport-manager-dev.properties not found");
         }
-        try {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load configuration.", e);
-        }
 
+        try {
+
+            properties.load(inputStream);
+
+        } catch (IOException e) {
+
+            throw new RuntimeException("Failed to load configuration.", e);
+
+        }
     }
 }

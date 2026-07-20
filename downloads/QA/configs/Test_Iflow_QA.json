@@ -7,7 +7,7 @@
         "type" : "com.sap.hci.api.Configuration"
       },
       "ParameterKey" : "http_address",
-      "ParameterValue" : "/test_API2",
+      "ParameterValue" : "/test_Bhushan",
       "DataType" : "xsd:string",
       "Description" : null
     }, {

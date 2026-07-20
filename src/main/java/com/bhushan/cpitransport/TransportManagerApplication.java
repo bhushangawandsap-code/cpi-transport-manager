@@ -2,6 +2,8 @@ package com.bhushan.cpitransport;
 
 import com.bhushan.cpitransport.auth.AuthenticationService;
 import com.bhushan.cpitransport.config.ConfigurationService;
+import com.bhushan.cpitransport.configuration.ConfigurationMergeService;
+import com.bhushan.cpitransport.configuration.ConfigurationSynchronizationService;
 import com.bhushan.cpitransport.file.FileService;
 import com.bhushan.cpitransport.http.HttpClientService;
 import com.bhushan.cpitransport.model.IntegrationFlowMetadata;
@@ -19,13 +21,54 @@ public class TransportManagerApplication {
         System.out.println("      CPI Transport Manager");
         System.out.println("======================================");
 
-        // ----------------------------------------------------
-        // Test Data
-        // ----------------------------------------------------
-        String iflowId = "Test_Iflow";
-        String sourceEnvironment = "dev";
-        String targetEnvironment = "qa";
 
+
+// ----------------------------------------------------
+
+// ---------- LOCAL TESTING ----------
+
+// String operation = "transport";          // transport | sync-config
+// String iflowId = "Test_Iflow";
+// String sourceEnvironment = "dev";
+// String targetEnvironment = "qa";
+// boolean updateConfiguration = true;
+// boolean deployAfterTransport = true;
+
+
+// ---------- GITHUB ACTIONS ----------
+
+        String operation =
+                System.getProperty("operation", "transport");
+
+        String iflowId =
+                System.getProperty("iflow", "Test_Iflow");
+
+        String sourceEnvironment =
+                System.getProperty("source", "dev");
+
+        String targetEnvironment =
+                System.getProperty("target", "qa");
+
+        boolean updateConfiguration =
+                Boolean.parseBoolean(
+                        System.getProperty(
+                                "updateConfiguration",
+                                "true"));
+
+        boolean deployAfterTransport =
+                Boolean.parseBoolean(
+                        System.getProperty(
+                                "deploy",
+                                "false"));
+
+        System.out.println();
+        System.out.println("Operation            : " + operation);
+        System.out.println("Integration Flow     : " + iflowId);
+        System.out.println("Source Environment   : " + sourceEnvironment);
+        System.out.println("Target Environment   : " + targetEnvironment);
+        System.out.println("Update Configuration : " + updateConfiguration);
+        System.out.println("Deploy               : " + deployAfterTransport);
+        System.out.println();
         // ----------------------------------------------------
         // Services
         // ----------------------------------------------------
@@ -72,6 +115,13 @@ public class TransportManagerApplication {
                         configurationService
                 );
 
+        IntegrationFlowConfigurationService configurationUpdateService =
+                new IntegrationFlowConfigurationService(
+                        httpClientService,
+                        configurationService,
+                        fileService
+                );
+
 
 
         Base64Util base64Util = new Base64Util();
@@ -85,7 +135,35 @@ public class TransportManagerApplication {
         String targetAccessToken =
                 authenticationService.generateToken(targetEnvironment);
 
+        // CONFIGURATION SYNCHRONIZATION
+        // ====================================================
 
+        if ("sync-config".equalsIgnoreCase(operation)) {
+
+            ConfigurationMergeService mergeService =
+                    new ConfigurationMergeService();
+
+            ConfigurationSynchronizationService
+                    synchronizationService =
+                    new ConfigurationSynchronizationService(
+                            httpClientService,
+                            configurationService,
+                            fileService,
+                            mergeService
+                    );
+
+            synchronizationService.synchronize(
+                    sourceAccessToken,
+                    sourceEnvironment,
+                    iflowId
+            );
+
+            System.out.println();
+            System.out.println("Configuration Synchronization Completed.");
+
+            return;
+
+        }
         // ----------------------------------------------------
         // STEP 1
         // Read iFlow Metadata from DEV
@@ -116,6 +194,11 @@ public class TransportManagerApplication {
                 sourceEnvironment,
                 iflowId
         );
+
+        IntegrationFlowDeploymentService deploymentService =
+                new IntegrationFlowDeploymentService(
+                        httpClientService,
+                        configurationService);
 
         // ----------------------------------------------------
         // STEP 4
@@ -215,13 +298,41 @@ public class TransportManagerApplication {
 
         // ----------------------------------------------------
         // STEP 7
-        // Update Externalized Parameters
-        // ----------------------------------------------------
-        // TODO
+        // STEP 7
+// Update Externalized Parameters
+// ----------------------------------------------------
+        if (updateConfiguration) {
+
+            configurationUpdateService.updateConfiguration(
+                    targetAccessToken,
+                    targetEnvironment,
+                    iflowId
+            );
+
+        } else {
+
+            System.out.println();
+            System.out.println("Externalized parameter update skipped.");
+
+        }
 
         // ----------------------------------------------------
         // STEP 8
         // Deploy iFlow
+        if (deployAfterTransport) {
+
+            deploymentService.deploy(
+                    targetAccessToken,
+                    targetEnvironment,
+                    iflowId
+            );
+
+        } else {
+
+            System.out.println();
+            System.out.println("Deployment skipped.");
+
+        }
         // ----------------------------------------------------
         // TODO
 

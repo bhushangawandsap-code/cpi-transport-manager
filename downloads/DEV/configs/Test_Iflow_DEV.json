@@ -1,0 +1,25 @@
+{
+  "d" : {
+    "results" : [ {
+      "ParameterKey" : "http_address",
+      "ParameterValue" : "/test_API2",
+      "DataType" : "xsd:string",
+      "Description" : null
+    }, {
+      "ParameterKey" : "http_auth",
+      "ParameterValue" : "RoleBased",
+      "DataType" : "xsd:string",
+      "Description" : null
+    }, {
+      "ParameterKey" : "http_Userroles",
+      "ParameterValue" : "ESBMessaging.send",
+      "DataType" : "xsd:string",
+      "Description" : null
+    }, {
+      "ParameterKey" : "SAP_ProfileId",
+      "ParameterValue" : "iflmap",
+      "DataType" : "xsd:string",
+      "Description" : null
+    } ]
+  }
+}
