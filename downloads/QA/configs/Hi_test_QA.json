@@ -7,7 +7,7 @@
         "type" : "com.sap.hci.api.Configuration"
       },
       "ParameterKey" : "http_rest",
-      "ParameterValue" : "/bhush_gaw",
+      "ParameterValue" : "/bhush_gawand",
       "DataType" : "xsd:string",
       "Description" : null
     }, {
