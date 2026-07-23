@@ -1,0 +1,25 @@
+{
+  "d" : {
+    "results" : [ {
+      "__metadata" : {
+        "id" : "https://49546bc3trial.it-cpitrial05.cfapps.us10-001.hana.ondemand.com:443/api/v1/Configurations('url')",
+        "uri" : "https://49546bc3trial.it-cpitrial05.cfapps.us10-001.hana.ondemand.com:443/api/v1/Configurations('url')",
+        "type" : "com.sap.hci.api.Configuration"
+      },
+      "ParameterKey" : "url",
+      "ParameterValue" : "/wert",
+      "DataType" : "xsd:string",
+      "Description" : null
+    }, {
+      "__metadata" : {
+        "id" : "https://49546bc3trial.it-cpitrial05.cfapps.us10-001.hana.ondemand.com:443/api/v1/Configurations('SAP_ProfileId')",
+        "uri" : "https://49546bc3trial.it-cpitrial05.cfapps.us10-001.hana.ondemand.com:443/api/v1/Configurations('SAP_ProfileId')",
+        "type" : "com.sap.hci.api.Configuration"
+      },
+      "ParameterKey" : "SAP_ProfileId",
+      "ParameterValue" : "iflmap",
+      "DataType" : "xsd:string",
+      "Description" : null
+    } ]
+  }
+}
