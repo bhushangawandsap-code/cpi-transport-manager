@@ -7,7 +7,7 @@
         "type" : "com.sap.hci.api.Configuration"
       },
       "ParameterKey" : "url",
-      "ParameterValue" : "/wert",
+      "ParameterValue" : "/wert23",
       "DataType" : "xsd:string",
       "Description" : null
     }, {
